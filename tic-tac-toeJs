@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <style>
+   table, td
+   {
+     border: 1px solid black;
+	 cursor: pointer;
+   }
+</style>
+ </head>
+<body onload="startGame()"></body>
+<p id="demo"> </p>
+
+ <script>
+ var td;
+ var PointsOfPlayer = 0;
+ var endGame= false;
+ var PointsOfBothPlayers=0;
+
+ 
+ function startGame()
+ {
+	var BoardSize = getBoardSize();
+	printBoard(BoardSize);
+	gameManager(BoardSize);
+ }
+ 
+function getBoardSize() 
+{
+	var BoardSize;
+	while(isNaN(BoardSize) || BoardSize <=1)
+	{
+		BoardSize = parseInt(prompt("Please enter the board size",3));
+	
+		if (isNaN(BoardSize)) 
+		{
+			alert(BoardSize + " is not a number")
+		}
+		if(BoardSize <=1)
+		{
+			alert(BoardSize + " need to be more than 1")
+		}
+	}
+	return BoardSize;
+}
+
+function printBoard(BoardSize)
+{
+
+	var numOfTr=0;
+    var board = document.createElement("TABLE");
+    board.setAttribute("id", "myTable");	
+	document.body.appendChild(board);
+		
+	for(var i=0; i < BoardSize; i++)
+	{	
+		var startLine = document.createElement("TR");
+		startLine.setAttribute("id", numOfTr);
+		document.getElementById("myTable").appendChild(startLine);
+		
+		for(var j=0; j < BoardSize; j++)
+		{		
+			var cellInALine = document.createElement("TD");
+			var text = document.createTextNode("#");	
+			cellInALine.appendChild(text);
+			document.getElementById(numOfTr).appendChild(cellInALine);
+		}	
+		numOfTr++;
+	}		
+}
+
+function gameManager(BoardSize)
+{
+	alert("Player 1 is X, player 2 is O. player 1 start");
+	EnterValuesToPosition(BoardSize);
+}	
+
+function EnterValuesToPosition(BoardSize)
+{
+	var tds = document.querySelectorAll('td');
+	for(var i = 0, len = tds.length; i < len; i++) {
+		tds[i].addEventListener('click', function(e)
+		{
+			td = this || (e || event).target;		
+			var myTable = document.getElementById('myTable');
+						
+				if(myTable.rows[td.parentNode.rowIndex].cells[td.cellIndex].innerHTML == '#')
+				{
+					if(PointsOfBothPlayers %2 ==0 && endGame == false)
+					{				
+						myTable.rows[td.parentNode.rowIndex].cells[td.cellIndex].innerHTML = 'X';
+						player = 'X';
+					}
+					else if(PointsOfBothPlayers %2 !=0&& endGame == false)
+					{
+						myTable.rows[td.parentNode.rowIndex].cells[td.cellIndex].innerHTML = 'O';
+						player = 'O';				
+					}
+					PointsOfBothPlayers++;
+				};
+			
+		    checkWinner(BoardSize,player);
+		   });
+	}
+}
+function checkWinner(BoardSize, player)
+{
+	for (var i=0; i< BoardSize; i++)
+	{
+		if(myTable.rows[td.parentNode.rowIndex].cells[i].innerHTML == player)
+		{
+			addPointsAndChooseWinner(BoardSize)
+		}
+	}			
+	if(PointsOfPlayer != BoardSize)
+	{
+		PointsOfPlayer = 0;			
+		for (var i=0; i< BoardSize; i++)
+		{	
+			if(myTable.rows[i].cells[td.cellIndex].innerHTML == player)
+			{
+					addPointsAndChooseWinner(BoardSize)
+			}
+		}	
+	}
+	if(PointsOfPlayer != BoardSize)
+	{
+		PointsOfPlayer = 0;			
+		for (var i=0; i< BoardSize; i++)
+		{	
+			if(myTable.rows[i].cells[i].innerHTML == player)
+			{
+				addPointsAndChooseWinner(BoardSize)
+			}
+		}
+	}
+	if(PointsOfPlayer != BoardSize)
+	{
+		PointsOfPlayer = 0;			
+		for (var i=0; i< BoardSize; i++)
+		{	
+			if(myTable.rows[i].cells[BoardSize-1-i].innerHTML == player)
+			{
+					addPointsAndChooseWinner(BoardSize)
+			}
+		}
+	}
+	if(PointsOfPlayer != BoardSize)
+	{
+		PointsOfPlayer = 0;
+	}
+}
+function addPointsAndChooseWinner(BoardSize)
+{
+	PointsOfPlayer++;
+	if(PointsOfPlayer == BoardSize)
+	{
+		document.getElementById("demo").innerHTML = player + " Won";
+		endGame = true;	
+	}
+	else
+	{
+		checkIfHasNoWinner(BoardSize)
+	}
+}
+function checkIfHasNoWinner(BoardSize)
+{
+	if(BoardSize*BoardSize == PointsOfBothPlayers)
+	{
+		document.getElementById("demo").innerHTML = "None of the players won";
+	}
+}
+</script>
+</html>
