@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <style>
+
+.myTable {
+  	display: table;
+    cursor: pointer;
+    border: 1px solid black;
+    width: 10px;
+}
+      
+.numOfTr {
+  	display: table-row;
+}
+
+.numOfTd {
+  	display: table-cell;
+  	padding: 30px 30px;
+  	border: 1px solid #999999;
+    width: 10px;
+}
+</style>
+ </head>
+<body onload="startGame()">
+    <div class ="myTable"></div>
+    <p id="demo"> </p>
+</body>
+
+ <script>
+ var td;
+ var PointsOfPlayer = 0;
+ var endGame= false;
+ var PointsOfBothPlayers=0;
+ 
+ function startGame()
+ {
+	var BoardSize = getBoardSize();
+	createBord(BoardSize);
+	gameManager(BoardSize);
+ }
+ 
+function getBoardSize() 
+{
+	var BoardSize;
+	while(isNaN(BoardSize) || BoardSize <=1)
+	{
+		BoardSize = parseInt(prompt("Please enter the board size",3));
+	
+		if (isNaN(BoardSize)) 
+		{
+			alert(BoardSize + " is not a number")
+		}
+		if(BoardSize <=1)
+		{
+			alert(BoardSize + " need to be more than 1")
+		}
+	}
+	return BoardSize;
+}
+
+function createBord(BoardSize)
+{
+
+	var numOfTr=0;	
+    var numOfTd = 0;
+	for(var i=0; i < BoardSize; i++)
+	{	
+		var startLine = document.createElement("div");
+		startLine.setAttribute("class", numOfTr);
+		document.getElementsByClassName("myTable")[0].appendChild(startLine);
+		
+		for(var j=0; j < BoardSize; j++)
+		{		
+			var cellInALine = document.createElement("div");
+            cellInALine.setAttribute("class", "numOfTd");
+            cellInALine.setAttribute("id",j)
+			var text = document.createTextNode("#");	
+			cellInALine.appendChild(text);
+			document.getElementsByClassName(numOfTr)[0].appendChild(cellInALine);
+            numOfTd++;
+		}	
+		numOfTr++;
+	}		
+}
+
+function gameManager(BoardSize)
+{
+	alert("Player 1 is X, player 2 is O. player 1 start");
+	EnterValuesToPosition(BoardSize);
+}	
+
+function EnterValuesToPosition(BoardSize)
+{
+    	var myTable = document.getElementById('myTable');
+            
+        var matrix = [];
+        for(var i=0 ; i < BoardSize ; i++) 
+        {
+            matrix[i] = new Array(BoardSize);
+        }
+	var tds = document.querySelectorAll('.numOfTd');
+	for(var i = 0, len = tds.length; i < len; i++) {
+		tds[i].addEventListener('click', function(e)
+		{
+			td = this || (e || event).target;		
+            
+            if(td.innerHTML  == '#')
+            {
+                if(PointsOfBothPlayers % 2 == 0 && endGame == false)
+					{				
+						td.innerHTML = 'X';
+						player = 'X';
+                        matrix[parseInt(parseInt(td.parentNode.className))]
+                        [parseInt(td.id)] = 'X';
+                        
+					}
+                else if(PointsOfBothPlayers % 2 != 0 && endGame == false)
+					{
+						td.innerHTML = 'O';
+						player = 'O';	
+                          matrix[parseInt(parseInt(td.parentNode.className))]
+                          [parseInt(td.id)] = 'O';
+					}
+					PointsOfBothPlayers++;
+				};
+
+		    checkWinner(BoardSize,player,matrix);
+		   });
+	}
+}
+function checkWinner(BoardSize, player,matrix)
+{
+    
+	for (var i=0; i< BoardSize; i++)
+	{
+        if(matrix[0][i] == player)
+		{
+			addPointsAndChooseWinner(BoardSize)
+		}
+	}			
+	if(PointsOfPlayer != BoardSize)
+	{
+		PointsOfPlayer = 0;			
+		for (var i=0; i< BoardSize; i++)
+		{	
+			if(matrix[i][td.id] == player)/////
+			{
+					addPointsAndChooseWinner(BoardSize)
+			}
+		}	
+	}
+	if(PointsOfPlayer != BoardSize)
+	{
+		PointsOfPlayer = 0;			
+		for (var i=0; i< BoardSize; i++)
+		{	
+			if(matrix[i][i] == player)
+			{
+				addPointsAndChooseWinner(BoardSize)
+			}
+		}
+	}
+	if(PointsOfPlayer != BoardSize)
+	{
+		PointsOfPlayer = 0;			
+		for (var i=0; i< BoardSize; i++)
+		{	
+			if(matrix[i][BoardSize-1-i] == player)
+			{
+				addPointsAndChooseWinner(BoardSize)
+			}
+		}
+	}
+	if(PointsOfPlayer != BoardSize)
+	{
+		PointsOfPlayer = 0;
+	}
+}
+function addPointsAndChooseWinner(BoardSize)
+{
+	PointsOfPlayer++;
+	if(PointsOfPlayer == BoardSize)
+	{
+		document.getElementById("demo").innerHTML = player + " Won";
+		endGame = true;	
+        location.reload();
+
+	}
+	else
+	{
+		checkIfHasNoWinner(BoardSize)
+	}
+}
+function checkIfHasNoWinner(BoardSize)
+{
+	if(BoardSize*BoardSize == PointsOfBothPlayers)
+	{
+		document.getElementById("demo").innerHTML = "None of the players won";
+        location.reload();
+	}
+}
+</script>
+</html>
